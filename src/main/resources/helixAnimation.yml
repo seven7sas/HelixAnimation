@@ -18,7 +18,7 @@ settings:
     parabola:
       start:
         offset:
-          x: 1
+          x: 1.5
           y: -0.5
           z: 0
         speed: 1.8
@@ -26,14 +26,15 @@ settings:
       end:
         offset:
           x: 0
-          y: 0.5
+          y: 1
           z: 0
         speed: 4
         height: 2.5
     helix:
       step_angle: 8
       step_height: 0.05
-      max_height: 5
+      fade_radius: 0.01
+      max_height: 4.5
     swap:
       period: 15
       sound:

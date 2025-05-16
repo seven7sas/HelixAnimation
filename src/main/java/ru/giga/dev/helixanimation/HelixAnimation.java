@@ -56,6 +56,7 @@ public class HelixAnimation extends AbstractAnimation {
         modifyAnchorCharges(charges -> config.anchorCharges.max - charges, 1, Sound.BLOCK_RESPAWN_ANCHOR_CHARGE);
         modifyLidded(Lidded::open);
 
+        setParamsPrize(prizeSelector.getRandomPrize());
         virtualItem.setPos(center);
         trackEntity(virtualItem);
 
@@ -70,9 +71,10 @@ public class HelixAnimation extends AbstractAnimation {
             }
         }.timer().delay(config.item.swap.period).start(this);
 
-        double radius = distanceBlocks(center, virtualItem.getPos());
         new AsyncTask() {
-            double angle = 0;
+            final Vec3d startPos = virtualItem.getPos();
+            double angle = Math.atan2(startPos.z - center.z, startPos.x - center.x);
+            double radius = Math.sqrt(Math.pow(startPos.x - center.x, 2) + Math.pow(startPos.z - center.z, 2));
             double height = 0;
 
             @Override
@@ -85,6 +87,7 @@ public class HelixAnimation extends AbstractAnimation {
 
                 angle += Math.PI / config.item.helix.stepAngle;
                 height += config.item.helix.stepHeight;
+                radius -= config.item.helix.fadeRadius;
 
                 if (height > config.item.helix.maxHeight) cancel();
             }
@@ -93,7 +96,6 @@ public class HelixAnimation extends AbstractAnimation {
         taskSwap.cancel();
         setParamsPrize(winner);
         modifyLidded(Lidded::open);
-        sleep(700);
 
         config.item.parabolaGroup.end.goTo(virtualItem, center).startSync(this);
 
@@ -125,10 +127,6 @@ public class HelixAnimation extends AbstractAnimation {
         removeEntity(virtualItem);
         modifyAnchorCharges(charges -> charges - config.anchorCharges.min, -1, Sound.BLOCK_RESPAWN_ANCHOR_DEPLETE);
         modifyLidded(Lidded::close);
-    }
-
-    private static double distanceBlocks(Vec3d start, Vec3d end) {
-        return Math.sqrt(Math.pow(end.x - start.x, 2) + Math.pow(end.y - start.y, 2) + Math.pow(end.z - start.z, 2));
     }
 
     private void modifyLidded(Consumer<Lidded> action) {
@@ -243,10 +241,11 @@ public class HelixAnimation extends AbstractAnimation {
                 }
             }
 
-            public record Helix(double stepAngle, double stepHeight, double maxHeight) {
+            public record Helix(double stepAngle, double stepHeight, double fadeRadius, double maxHeight) {
                 public final static Codec<Helix> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                         Codec.DOUBLE.fieldOf("step_angle").forGetter(Helix::stepAngle),
                         Codec.DOUBLE.fieldOf("step_height").forGetter(Helix::stepHeight),
+                        Codec.DOUBLE.fieldOf("fade_radius").forGetter(Helix::fadeRadius),
                         Codec.DOUBLE.fieldOf("max_height").forGetter(Helix::maxHeight)
                 ).apply(instance, Helix::new));
             }
