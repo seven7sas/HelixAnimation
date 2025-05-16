@@ -1,0 +1,53 @@
+provider: gigadev:helix
+id: helix
+
+settings:
+  particles:
+    name: SPELL_WITCH
+    offset:
+      x: 0.2
+      y: 0.2
+      z: 0.2
+    count: 3
+    speed: 0.1
+  anchor_charges:
+    interval: 15
+    max: 4
+    min: 1
+  item:
+    parabola:
+      start:
+        offset:
+          x: 1
+          y: -0.5
+          z: 0
+        speed: 1.8
+        height: 2
+      end:
+        offset:
+          x: 0
+          y: 0.5
+          z: 0
+        speed: 4
+        height: 2.5
+    helix:
+      step_angle: 8
+      step_height: 0.05
+      max_height: 5
+    swap:
+      period: 15
+      sound:
+        name: ITEM_ARMOR_EQUIP_ELYTRA
+        volume: 1
+        pitch: 1
+  fireworks:
+    #   https://jd.papermc.io/paper/1.16.5/org/bukkit/FireworkEffect.Type.html
+    - type: STAR
+      offset:
+        x: 0
+        y: 2
+        z: 0
+      colors:
+        - '#9639b3'
+        - '#c735cc'
+        - '#f23a9f'
